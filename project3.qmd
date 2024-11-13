@@ -1,0 +1,44 @@
+---
+title: "project3"
+format: html
+editor: visual
+---
+
+## Project 3
+
+Team Members:
+
+-   Mateo Bandala Jacques \| abandal1\@jh.edu
+
+-   María Camila Restrepo \| mrestre\@jh.edu
+
+# Setup
+
+```{r}
+
+library(tidyverse)
+library(caret)
+
+
+```
+
+::: callout-note
+## For our project, we will be using the NYY flights data
+:::
+
+
+# Part 1
+
+Tu parte aquí belleza:
+```{r}
+
+
+
+
+
+```
+
+
+
+
+# Part 2
