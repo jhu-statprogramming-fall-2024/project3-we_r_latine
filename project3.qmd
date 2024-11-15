@@ -18,6 +18,9 @@ Team Members:
 
 library(tidyverse)
 library(caret)
+library(nycflights13)
+
+
 
 
 ```
@@ -26,19 +29,58 @@ library(caret)
 ## For our project, we will be using the NYY flights data
 :::
 
-
 # Part 1
 
 Tu parte aquí belleza:
+
 ```{r}
 
-
+#We will be using flight data from nycflight13
 
 
 
 ```
 
-
-
-
 # Part 2
+
+```{r}
+
+nyc_flights <- flights
+
+#Our outcome of interest will be "DELAYED", defined as a flight being delayed by more than 30 minutes
+
+#Let's look at a simple boxplot of arrival delay
+nyc_flights %>%
+  slice_sample(n=1000)%>%
+  ggplot(aes(x=arr_delay)) +
+  scale_x_continuous(limits = c(0,200)) +
+  geom_vline(xintercept = 30, color="red")+
+  geom_bar() +
+  labs(x="Departure delay", y="Count", title = "Histogram of arrival delay",
+       subtitle = "NYC, 2013", caption = "Random sample of 1,000 flights")
+
+
+#Generate our outcome variable, "DELAYED"
+nyc_flights <- nyc_flights %>%
+  mutate(DELAY = ifelse(arr_delay > 30, 1, 0)) %>%
+  drop_na(arr_delay)
+
+
+#First, split the data into training and testing set
+
+#Set seed
+set.seed(89631139) 
+
+# Create a partition
+train_index <- createDataPartition(nyc_flights$DELAY, p = 0.7, list = FALSE)
+
+# Split the data
+train_data <- nyc_flights[train_index, ]
+test_data <- nyc_flights[-train_index, ]
+
+# Check the distribution
+prop.table(table(train_data$DELAY))
+prop.table(table(test_data$DELAY)) #looks good!
+
+
+```
