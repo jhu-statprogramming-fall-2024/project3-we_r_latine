@@ -19,7 +19,8 @@ Team Members:
 library(tidyverse)
 library(caret)
 library(nycflights13)
-
+library(car)
+library(Metrics)
 
 
 
@@ -126,3 +127,72 @@ rfe_results %>%
 
 
 ```
+::: callout-note
+## Now let's train the model
+:::
+
+```{r}
+#these are our optimal variables: 
+optimal_predictors <- rfe_results$optVariables
+
+
+#Let's fir a linear regression
+formula <- as.formula(paste("arr_delay ~", paste(optimal_predictors, collapse = " + ")))
+lm_model <- lm(formula, data = train_data)
+
+#Let's look at the model output
+
+summary(lm_model)
+
+vif(lm_model) #There seems to be no issues with colinearity 
+
+
+
+
+#Let's test the model
+
+#First evaluate missingness
+test_data %>%
+  summarise(across(
+    all_of(c("arr_delay", "dep_delay", "distance", "temp", "precip", "wind_speed")), 
+    ~ sum(is.na(.)), 
+    .names = "missing_{.col}"
+  ))
+
+# A small porportion of predictors are missingm we will simply get rid of them for now
+test_data <- test_data %>%
+  filter(if_all(
+    all_of(c("arr_delay", "dep_delay", "distance", "temp", "precip", "wind_speed")), 
+    ~ !is.na(.)
+  ))
+
+#now the prediction proper 
+
+test_predictions <- predict(lm_model, newdata = test_data)
+
+
+
+
+# Evaluate model performance
+
+rmse_value <- rmse(test_data$arr_delay, test_predictions)
+mae_value <- mae(test_data$arr_delay, test_predictions)
+r_squared <- cor(test_data$arr_delay, test_predictions)^2
+
+# Print metrics
+cat("RMSE:", rmse_value, "\n") #this was 17.84 in the training set
+cat("MAE:", mae_value, "\n")  #This was13 in the trainign set 
+cat("R-squared:", r_squared, "\n") #this was 84 in the training set
+
+
+
+ggplot(data = test_data, aes(x = test_predictions, y = arr_delay)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, color = "red") +
+  ggtitle("Actual vs Predicted Arrival Delays") +
+  xlab("Predicted Arrival Delay") +
+  ylab("Actual Arrival Delay")
+
+
+```
+
