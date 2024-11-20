@@ -15,32 +15,156 @@ Team Members:
 # Setup
 
 ```{r}
-
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("DBI")) install.packages("DBI")
+if(!require("RSQLite")) install.packages("RSQLite")
+if(!require("caret")) install.packages("caret")
+if(!require("nycflights13")) install.packages("nycflights13")
+if(!require("car")) install.packages("car")
+if(!require("Metrics")) install.packages("Metrics")
+  
 library(tidyverse)
+library(DBI)
+library(RSQLite)
 library(caret)
 library(nycflights13)
 library(car)
 library(Metrics)
 
 
-
 ```
 
 ::: callout-note
-## For our project, we will be using the NYY flights data
+## For our project, we will be using the NYC flights data
 :::
 
 # Part 1
 
-Tu parte aquí belleza:
+We will be using flight data from nycflight13
+
+Question to investigate:
+
+Which airline had the most delay in 2013 in hours and in number of flights?
+And is there a relationship between delays and weather in every airline?
+
+1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.
 
 ```{r}
 
-#We will be using flight data from nycflight13
+nyc_flights <- flights
+nyc_airlines <- airlines
+nyc_weather <- weather
 
+# Create a connection to an SQLite database
+con <- dbConnect(RSQLite::SQLite(), "nycflights13.db")
 
+dbWriteTable(con, "nyc_flights", nyc_flights)
+dbWriteTable(con, "nyc_airlines", nyc_airlines)
+dbWriteTable(con, "nyc_weather", weather)
+
+dbListTables(con) #all three tables are there
 
 ```
+
+2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g. SELECT, GROUP BY, DISTINCT, SUM, etc).  
+
+```{r}
+#number of flights by origin
+
+dbGetQuery(con, "SELECT origin, COUNT(*) AS num_flights FROM nyc_flights GROUP BY origin")
+
+#Delay
+
+dbGetQuery(con, "SELECT AVG(dep_delay) FROM nyc_flights")
+
+#delay by airline
+
+dbGetQuery(con, "SELECT carrier, AVG(dep_delay) 
+           FROM nyc_flights 
+           GROUP BY carrier
+           ORDER BY AVG(dep_delay) DESC")
+
+#weather: precipitation and visibility
+
+dbGetQuery(con, "SELECT visib, AVG(visib), MIN(visib), MAX(visib)
+           FROM nyc_weather")
+
+dbGetQuery(con, "SELECT precip, AVG(precip), MIN(precip), MAX(precip)
+           FROM nyc_weather")
+
+```
+
+
+List of SQL functions used:
+
+- COUNT
+- AVG
+- MIN
+- MAX
+- GROUP BY
+- ORDER BY
+
+3. Write two SQL queries to create new features from existing data.  
+
+```{r}
+#Change precipitation and visibility into the international standard
+
+#Precipitation from inches to mm
+dbExecute(con, "ALTER TABLE nyc_weather 
+          ADD COLUMN precip_mm NUMERIC")
+dbExecute(con, "UPDATE nyc_weather 
+          SET precip_mm = precip * 25.4")
+
+#Visibility from miles to km
+dbExecute(con, "ALTER TABLE nyc_weather 
+          ADD COLUMN visib_km NUMERIC")
+dbExecute(con, "UPDATE nyc_weather 
+          SET visib_km = visib * 1.60934")
+
+dbListFields(con, "nyc_weather")
+
+#how did that change the values
+dbGetQuery(con, "SELECT visib_km, AVG(visib_km), MIN(visib_km), MAX(visib_km)
+           FROM nyc_weather")
+
+dbGetQuery(con, "SELECT precip_mm, AVG(precip_mm), MIN(precip_mm), MAX(precip_mm)
+           FROM nyc_weather")
+
+#Merge the name of the airlines, precipitation and visibility
+
+dbGetQuery(con, "SELECT COUNT(*) FROM nyc_flights")
+
+merged <- dbGetQuery(con, "
+    SELECT f.*, w.precip_mm, w.visib_km
+    FROM nyc_flights AS f
+    INNER JOIN nyc_weather AS w
+    ON f.time_hour = w.time_hour
+")
+nrow(merged) #we have more rows than expected so we need to check why
+
+dbGetQuery(con, "SELECT time_hour, COUNT(*) 
+           FROM nyc_weather 
+           GROUP BY time_hour HAVING COUNT(*) > 1
+           ORDER BY COUNT(*) ASC") 
+
+#most of them have a count of 3 and this is because of the 3 different origins. So we need to update our dataset. Some of them only have two which means that they don't have weather data on some airports
+
+merged <- dbGetQuery(con, "
+    SELECT f.*, w.precip_mm, w.visib_km
+    FROM nyc_flights AS f
+    INNER JOIN nyc_weather AS w
+    ON f.time_hour = w.time_hour AND f.origin = w.origin
+")
+
+nrow(merged) 
+
+#it seems that some flights were not matched, so we'll exclude them
+
+```
+
+4. Visualize your data by creating a plot with ggplot2. For example, if using nycflights13, you could think about how to visualize delays by month, carrier, or weather conditions.
+
+5. Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis. Be sure to comment and organize your code so is easy to understand what you are doing.
 
 # Part 2
 
@@ -92,10 +216,10 @@ dim(test_data) #Looks good
 
 
 ```
+
 ::: callout-note
 ## First, we will select which predictors to include by using Recursive Feature Elimination
 :::
-
 
 ```{r}
 
@@ -127,6 +251,7 @@ rfe_results %>%
 
 
 ```
+
 ::: callout-note
 ## Now let's train the model
 :::
@@ -195,4 +320,3 @@ ggplot(data = test_data, aes(x = test_predictions, y = arr_delay)) +
 
 
 ```
-
