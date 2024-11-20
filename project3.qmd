@@ -156,9 +156,14 @@ merged <- dbGetQuery(con, "
     ON f.time_hour = w.time_hour AND f.origin = w.origin
 ")
 
-nrow(merged) 
+nrow(merged) #it seems that some flights were not matched, as the observations decreased from 336776 to 335220
 
-#it seems that some flights were not matched, so we'll exclude them
+merged <- merged %>%
+  right_join(nyc_airlines, by = "carrier") %>%
+   rename(
+    precip = precip_mm,
+    visib = visib_km
+  )
 
 ```
 
