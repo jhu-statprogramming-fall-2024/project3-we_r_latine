@@ -33,7 +33,7 @@ library(Metrics)
 ```
 
 ::: callout-note
-## For our project, we will be using the NYC flights data
+## For our project, we will be using the NYC flights data from 2013
 :::
 
 # Part 1
@@ -45,7 +45,7 @@ Question to investigate:
 Which airlines were the most delayed on average in 2013?
 And is there a relationship between delays and weather by airlines?
 
-### 1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.
+*1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.*
 
 ```{r}
 
@@ -64,7 +64,7 @@ dbListTables(con) #all three tables are there
 
 ```
 
-### 2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g. SELECT, GROUP BY, DISTINCT, SUM, etc).  
+*2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g. SELECT, GROUP BY, DISTINCT, SUM, etc).* 
 
 ```{r}
 #number of flights by origin
@@ -103,7 +103,7 @@ List of SQL functions used:
 - GROUP BY
 - ORDER BY
 
-### 3. Write two SQL queries to create new features from existing data.  
+*3. Write two SQL queries to create new features from existing data.*  
 
 ```{r}
 #Change precipitation and visibility into the international standard
@@ -167,7 +167,7 @@ merged <- merged %>%
 
 ```
 
-### 4. Visualize your data by creating a plot with ggplot2. 
+*4. Visualize your data by creating a plot with ggplot2.* 
 
 Departure delay:
 
@@ -233,7 +233,7 @@ merged %>%
 ```
 
 
-5. Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis. Be sure to comment and organize your code so is easy to understand what you are doing.
+*5. Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis. Be sure to comment and organize your code so is easy to understand what you are doing.*
 
 
 

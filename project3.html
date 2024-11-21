@@ -195,7 +195,7 @@ The following objects are masked from 'package:caret':
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-For our project, we will be using the NYC flights data
+For our project, we will be using the NYC flights data from 2013
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -208,8 +208,7 @@ For our project, we will be using the NYC flights data
 <p>We will be using flight data from nycflight13</p>
 <p>Question to investigate:</p>
 <p>Which airlines were the most delayed on average in 2013? And is there a relationship between delays and weather by airlines?</p>
-<section id="if-its-already-a-sql-database-read-into-r-using-the-dbi-and-rsqlite-packages.-if-its-not-already-a-sql-database-create-a-new-sql-database-and-use-the-dbwritetable-function-to-add-at-minimum-three-tables-to-the-sql-database." class="level3">
-<h3 class="anchored" data-anchor-id="if-its-already-a-sql-database-read-into-r-using-the-dbi-and-rsqlite-packages.-if-its-not-already-a-sql-database-create-a-new-sql-database-and-use-the-dbwritetable-function-to-add-at-minimum-three-tables-to-the-sql-database.">1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.</h3>
+<p><em>1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.</em></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nyc_flights <span class="ot">&lt;-</span> flights</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>nyc_airlines <span class="ot">&lt;-</span> airlines</span>
@@ -227,9 +226,7 @@ For our project, we will be using the NYC flights data
 <pre><code>[1] "nyc_airlines" "nyc_flights"  "nyc_weather" </code></pre>
 </div>
 </div>
-</section>
-<section id="write-three-sql-queries-using-dbgetquery-to-explore-and-summarize-the-data.-you-must-use-at-least-five-different-sql-functions-e.g.-select-group-by-distinct-sum-etc." class="level3">
-<h3 class="anchored" data-anchor-id="write-three-sql-queries-using-dbgetquery-to-explore-and-summarize-the-data.-you-must-use-at-least-five-different-sql-functions-e.g.-select-group-by-distinct-sum-etc.">2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g.&nbsp;SELECT, GROUP BY, DISTINCT, SUM, etc).</h3>
+<p><em>2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g.&nbsp;SELECT, GROUP BY, DISTINCT, SUM, etc).</em></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#number of flights by origin</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -298,9 +295,7 @@ For our project, we will be using the NYC flights data
 <li>GROUP BY</li>
 <li>ORDER BY</li>
 </ul>
-</section>
-<section id="write-two-sql-queries-to-create-new-features-from-existing-data." class="level3">
-<h3 class="anchored" data-anchor-id="write-two-sql-queries-to-create-new-features-from-existing-data.">3. Write two SQL queries to create new features from existing data.</h3>
+<p><em>3. Write two SQL queries to create new features from existing data.</em></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Change precipitation and visibility into the international standard</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -411,9 +406,7 @@ For our project, we will be using the NYC flights data
 <span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">visib =</span> visib_km</span>
 <span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="visualize-your-data-by-creating-a-plot-with-ggplot2." class="level3">
-<h3 class="anchored" data-anchor-id="visualize-your-data-by-creating-a-plot-with-ggplot2.">4. Visualize your data by creating a plot with ggplot2.</h3>
+<p><em>4. Visualize your data by creating a plot with ggplot2.</em></p>
 <p>Departure delay:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(merged<span class="sc">$</span>dep_delay) <span class="co">#need to exclude NAs for calculations</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -522,10 +515,7 @@ For our project, we will be using the NYC flights data
 </div>
 </div>
 </div>
-<ol start="5" type="1">
-<li>Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis. Be sure to comment and organize your code so is easy to understand what you are doing.</li>
-</ol>
-</section>
+<p><em>5. Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis. Be sure to comment and organize your code so is easy to understand what you are doing.</em></p>
 </section>
 <section id="part-2" class="level1">
 <h1>Part 2</h1>
@@ -549,7 +539,7 @@ For our project, we will be using the NYC flights data
 <span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Departure delay"</span>, <span class="at">y=</span><span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Histogram of arrival delay"</span>,</span>
 <span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"NYC, 2013"</span>, <span class="at">caption =</span> <span class="st">"Random sample of 1,000 flights"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 582 rows containing non-finite outside the scale range
+<pre><code>Warning: Removed 574 rows containing non-finite outside the scale range
 (`stat_count()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
@@ -723,7 +713,7 @@ F-statistic: 2.429e+05 on 5 and 228031 DF,  p-value: &lt; 2.2e-16</code></pre>
 1                 0                 0                0          492
 # ℹ 2 more variables: missing_precip &lt;int&gt;, missing_wind_speed &lt;int&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A small porportion of predictors are missingm we will simply get rid of them for now</span></span>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A small proportion of predictors are missing, we will simply get rid of them for now</span></span>
 <span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> test_data <span class="sc">%&gt;%</span></span>
 <span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">if_all</span>(</span>
 <span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">all_of</span>(<span class="fu">c</span>(<span class="st">"arr_delay"</span>, <span class="st">"dep_delay"</span>, <span class="st">"distance"</span>, <span class="st">"temp"</span>, <span class="st">"precip"</span>, <span class="st">"wind_speed"</span>)), </span>
@@ -748,7 +738,7 @@ F-statistic: 2.429e+05 on 5 and 228031 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>RMSE: 17.85706 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MAE:"</span>, mae_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)  <span class="co">#This was13 in the trainign set </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MAE:"</span>, mae_value, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)  <span class="co">#This was13 in the training set </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>MAE: 13.01894 </code></pre>
 </div>
@@ -770,6 +760,13 @@ F-statistic: 2.429e+05 on 5 and 228031 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
+<p>Summary of out study objective, methods and main findings:</p>
+<p>Our study objective was to predict arrival delay for flights in the NYC area in 2013 using the nycflights13 dataset. For this, we focused on the continuous outcome arr_delay (arrival delay in minutes).</p>
+<p>Using the caret package, we split the data into training (70%) and testing (30%) subsets, after excluding rows where the outcome was missing. To identify the most important predictors, we used Recursive Feature Elimination (RFE) with a linear regression model and 5-fold cross-validation. Our initial predictors included dep_delay, distance, temp, precip, and wind_speed. The RFE results showed that all five predictors were optimal.</p>
+<p>Using these predictors, we trained a linear regression model on the training data. From the model, we found that departure delays are roughly linear predictors of arrical delay (that is, for one minute in delay of the departure, expect one minute of delay of arrival). We also found that longer distance flights are less likely to be delayed. For example, for each thousand kilometers of flight, flights tend to arrive 2.5 minutes earlier. Similarly, lower temperatures, high wind speed and precipitation were all associated with delays.</p>
+<p>We then evaluated the model’s performance on the testing data by calculating the Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and R-squared. The model achieved an RMSE of 17.86 minutes, a MAE of 13.02 minutes, and an R-squared value of 0.84.</p>
+<p>One key limitation is thar weather and temperature might be associated to calendar days (and thus holidays), which could be strongly associated to delays. Furthermore, this data was only trained on New York City airports, which are large, and might not be generalizable to airports abroad or elsewhere in the U.S.</p>
+<p>In summary, if a flight is delayed on departure, the minutes of delay are good predictors of minutes of arrival delay. Furthermore, shorter flights in cold, rainy days are likely to result in arrival delays.</p>
 </section>
 
 </main>
