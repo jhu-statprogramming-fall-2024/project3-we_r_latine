@@ -1,10 +1,8 @@
 ---
-title: "project3"
+title: "Project 3"
 format: html
 editor: visual
 ---
-
-## Project 3
 
 Team Members:
 
@@ -44,10 +42,10 @@ We will be using flight data from nycflight13
 
 Question to investigate:
 
-Which airline had the most delay in 2013 in hours and in number of flights?
-And is there a relationship between delays and weather in every airline?
+Which airlines were the most delayed on average in 2013?
+And is there a relationship between delays and weather by airlines?
 
-1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.
+### 1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.
 
 ```{r}
 
@@ -58,20 +56,21 @@ nyc_weather <- weather
 # Create a connection to an SQLite database
 con <- dbConnect(RSQLite::SQLite(), "nycflights13.db")
 
-dbWriteTable(con, "nyc_flights", nyc_flights)
-dbWriteTable(con, "nyc_airlines", nyc_airlines)
-dbWriteTable(con, "nyc_weather", weather)
+dbWriteTable(con, "nyc_flights", nyc_flights, overwrite = TRUE)
+dbWriteTable(con, "nyc_airlines", nyc_airlines, overwrite = TRUE)
+dbWriteTable(con, "nyc_weather", weather, overwrite = TRUE)
 
 dbListTables(con) #all three tables are there
 
 ```
 
-2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g. SELECT, GROUP BY, DISTINCT, SUM, etc).  
+### 2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g. SELECT, GROUP BY, DISTINCT, SUM, etc).  
 
 ```{r}
 #number of flights by origin
 
 dbGetQuery(con, "SELECT origin, COUNT(*) AS num_flights FROM nyc_flights GROUP BY origin")
+#This data set includes departures from Newark Liberty International Airport, John F. Kennedy International Airport and LaGuardia Airport.
 
 #Delay
 
@@ -104,7 +103,7 @@ List of SQL functions used:
 - GROUP BY
 - ORDER BY
 
-3. Write two SQL queries to create new features from existing data.  
+### 3. Write two SQL queries to create new features from existing data.  
 
 ```{r}
 #Change precipitation and visibility into the international standard
@@ -142,10 +141,11 @@ merged <- dbGetQuery(con, "
 ")
 nrow(merged) #we have more rows than expected so we need to check why
 
-dbGetQuery(con, "SELECT time_hour, COUNT(*) 
+time <- dbGetQuery(con, "SELECT time_hour, COUNT(*) 
            FROM nyc_weather 
            GROUP BY time_hour HAVING COUNT(*) > 1
            ORDER BY COUNT(*) ASC") 
+head(time, 20)
 
 #most of them have a count of 3 and this is because of the 3 different origins. So we need to update our dataset. Some of them only have two which means that they don't have weather data on some airports
 
@@ -167,9 +167,75 @@ merged <- merged %>%
 
 ```
 
-4. Visualize your data by creating a plot with ggplot2. For example, if using nycflights13, you could think about how to visualize delays by month, carrier, or weather conditions.
+### 4. Visualize your data by creating a plot with ggplot2. 
+
+Departure delay:
+
+```{r}
+summary(merged$dep_delay) #need to exclude NAs for calculations
+
+#visualizing departure delay by airline
+
+merged <- merged %>%
+  mutate(name = factor(name))
+
+glimpse(merged$name) #checking that it is now a factor and can be reordered for the plots
+
+merged %>%
+  group_by(name) %>%
+  summarise(avg_delay = mean(dep_delay, na.rm = TRUE)) %>%
+  mutate(name = fct_reorder(name, avg_delay)) %>%
+  ggplot(aes(x = avg_delay, y = name)) +
+  geom_col() +
+  labs(title = "Departure Delay by National Airlines leaving from New York in 2013", 
+       subtitle = "Includes flights departing from the Newark Liberty International Airport, \nJohn F. Kennedy International Airport and LaGuardia Airport.",
+       x = "Average departure delay (minutes)", y = "Airline", ) +
+  theme_minimal()
+
+#arrival delay
+merged %>%
+  group_by(name) %>%
+  summarise(avg_delay = mean(arr_delay, na.rm = TRUE)) %>%
+  arrange(desc(avg_delay))
+#the results are similar for the airlines with most delay. We will only plot departure delay because it is the metric airlines take into consideration.
+```
+
+The influence of weather on departure delay:
+
+```{r, fig.width=10, fig.height=8}
+
+#precipitation
+
+merged %>%
+  filter(!is.na(dep_delay)) %>%
+   ggplot(aes(x = dep_delay, y = precip)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "blue") +
+  facet_wrap(~ name) +
+  labs(title = "Relationship between Precipitation and Departure Delay by Airline in National Flights Leaving from New York in 2013",
+       subtitle = "Includes flights departing from the Newark Liberty International Airport, John F. Kennedy International Airport and LaGuardia Airport.",
+       x = "Average departure delay (minutes)",
+       y = "Precipitation (mm)")
+
+#visibility
+
+merged %>%
+  filter(!is.na(dep_delay)) %>%
+   ggplot(aes(x = dep_delay, y = visib)) +
+  geom_point() +
+  geom_smooth(method = "lm", color = "blue") +
+  facet_wrap(~ name) +
+  labs(title = "Relationship between Visibility and Departure Delay by Airline in National Flights Leaving from New York in 2013",
+       subtitle = "Includes flights departing from the Newark Liberty International Airport, John F. Kennedy International Airport and LaGuardia Airport.",
+       x = "Average departure delay (minutes)",
+       y = "Visibility (km)")
+  
+```
+
 
 5. Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis. Be sure to comment and organize your code so is easy to understand what you are doing.
+
+
 
 # Part 2
 
