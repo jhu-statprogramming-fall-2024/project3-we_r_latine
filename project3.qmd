@@ -412,17 +412,17 @@ ggplot(data = test_data, aes(x = test_predictions, y = arr_delay)) +
 
 
 ```
-Summary of out study objective, methods and main findings:
+
+**Summary of out study objective, methods and main findings:**
 
 Our study objective was to predict arrival delay for flights in the NYC area in 2013 using the nycflights13 dataset. For this, we focused on the continuous outcome arr_delay (arrival delay in minutes). 
 
-Using the caret package, we split the data into training (70%) and testing (30%) subsets, after excluding rows where the outcome was missing. To identify the most important predictors, we used Recursive Feature Elimination (RFE) with a linear regression model and 5-fold cross-validation. Our initial predictors included dep_delay, distance, temp, precip, and wind_speed. The RFE results showed that all five predictors were optimal.
+Using the caret package, we split the data into training (70%) and testing (30%) subsets, after excluding rows where the outcome was missing. To identify the most important predictors, we used Recursive Feature Elimination (RFE) with a linear regression model and 5-fold cross-validation. Our initial predictors included dep_delay, distance, temp, precip, and wind_speed. The RFE results showed that all five predictors were optimal.  
 
+Using these predictors, we trained a linear regression model on the training data. From the model, we found that departure delays are roughly linear predictors of arrival delay (that is, for one minute in delay of the departure, expect one minute of delay of arrival). We also found that longer distance flights are less likely to be delayed. For example, for each thousand kilometers of flight, flights tend to arrive 2.5 minutes earlier. Similarly, lower temperatures, high wind speed and precipitation were all associated with delays.  
 
-Using these predictors, we trained a linear regression model on the training data. From the model, we found that departure delays are roughly linear predictors of arrical delay (that is, for one minute in delay of the departure, expect one minute of delay of arrival). We also found that longer distance flights are less likely to be delayed. For example, for each thousand kilometers of flight, flights tend to arrive 2.5 minutes earlier. Similarly, lower temperatures, high wind speed and precipitation were all associated with delays.
+We then evaluated the model's performance on the testing data by calculating the Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and R-squared. The model achieved an RMSE of 17.86 minutes, a MAE of 13.02 minutes, and an R-squared value of 0.84.  
 
-We then evaluated the model's performance on the testing data by calculating the Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and R-squared. The model achieved an RMSE of 17.86 minutes, a MAE of 13.02 minutes, and an R-squared value of 0.84.
+One key limitation is that weather and temperature might be associated to calendar days (and thus holidays), which could be strongly associated to delays. Furthermore, this data was only trained on New York City airports, which are large, and might not be generalizable to airports abroad or elsewhere in the U.S.  
 
-One key limitation is thar weather and temperature might be associated to calendar days (and thus holidays), which could be strongly associated to delays. Furthermore, this data was only trained on New York City airports, which are large, and might not be generalizable to airports abroad or elsewhere in the U.S.
-
-In summary, if a flight is delayed on departure, the minutes of delay are good predictors of minutes of arrival delay. Furthermore, shorter flights in cold, rainy days are likely to result in arrival delays. 
+In summary, if a flight is delayed on departure, the minutes of delay are good predictors of minutes of arrival delay. Furthermore, shorter flights in cold, rainy days are likely to result in arrival delays.   

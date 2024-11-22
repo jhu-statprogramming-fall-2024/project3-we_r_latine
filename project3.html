@@ -595,7 +595,7 @@ For our project, we will be using the NYC flights data from 2013
 <span id="cb73-17"><a href="#cb73-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Departure delay"</span>, <span class="at">y=</span><span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Histogram of arrival delay"</span>,</span>
 <span id="cb73-18"><a href="#cb73-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"NYC, 2013"</span>, <span class="at">caption =</span> <span class="st">"Random sample of 1,000 flights"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 603 rows containing non-finite outside the scale range
+<pre><code>Warning: Removed 590 rows containing non-finite outside the scale range
 (`stat_count()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
@@ -816,12 +816,12 @@ F-statistic: 2.429e+05 on 5 and 228031 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-<p>Summary of out study objective, methods and main findings:</p>
+<p><strong>Summary of out study objective, methods and main findings:</strong></p>
 <p>Our study objective was to predict arrival delay for flights in the NYC area in 2013 using the nycflights13 dataset. For this, we focused on the continuous outcome arr_delay (arrival delay in minutes).</p>
 <p>Using the caret package, we split the data into training (70%) and testing (30%) subsets, after excluding rows where the outcome was missing. To identify the most important predictors, we used Recursive Feature Elimination (RFE) with a linear regression model and 5-fold cross-validation. Our initial predictors included dep_delay, distance, temp, precip, and wind_speed. The RFE results showed that all five predictors were optimal.</p>
-<p>Using these predictors, we trained a linear regression model on the training data. From the model, we found that departure delays are roughly linear predictors of arrical delay (that is, for one minute in delay of the departure, expect one minute of delay of arrival). We also found that longer distance flights are less likely to be delayed. For example, for each thousand kilometers of flight, flights tend to arrive 2.5 minutes earlier. Similarly, lower temperatures, high wind speed and precipitation were all associated with delays.</p>
+<p>Using these predictors, we trained a linear regression model on the training data. From the model, we found that departure delays are roughly linear predictors of arrival delay (that is, for one minute in delay of the departure, expect one minute of delay of arrival). We also found that longer distance flights are less likely to be delayed. For example, for each thousand kilometers of flight, flights tend to arrive 2.5 minutes earlier. Similarly, lower temperatures, high wind speed and precipitation were all associated with delays.</p>
 <p>We then evaluated the model’s performance on the testing data by calculating the Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), and R-squared. The model achieved an RMSE of 17.86 minutes, a MAE of 13.02 minutes, and an R-squared value of 0.84.</p>
-<p>One key limitation is thar weather and temperature might be associated to calendar days (and thus holidays), which could be strongly associated to delays. Furthermore, this data was only trained on New York City airports, which are large, and might not be generalizable to airports abroad or elsewhere in the U.S.</p>
+<p>One key limitation is that weather and temperature might be associated to calendar days (and thus holidays), which could be strongly associated to delays. Furthermore, this data was only trained on New York City airports, which are large, and might not be generalizable to airports abroad or elsewhere in the U.S.</p>
 <p>In summary, if a flight is delayed on departure, the minutes of delay are good predictors of minutes of arrival delay. Furthermore, shorter flights in cold, rainy days are likely to result in arrival delays.</p>
 </section>
 
