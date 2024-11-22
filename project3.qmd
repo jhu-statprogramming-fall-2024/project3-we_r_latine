@@ -45,7 +45,7 @@ Question to investigate:
 Which airlines were the most delayed on average in 2013?
 And is there a relationship between delays and weather by airlines?
 
-*1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.*
+**1. If it’s already a SQL database, read into R using the DBI and RSQLite packages. If it’s not already a SQL database, create a new SQL database and use the dbWriteTable() function to add at minimum three tables to the SQL database.**
 
 ```{r}
 
@@ -64,7 +64,7 @@ dbListTables(con) #all three tables are there
 
 ```
 
-*2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g. SELECT, GROUP BY, DISTINCT, SUM, etc).* 
+**2. Write three SQL queries using dbGetQuery() to explore and summarize the data. You must use at least five different SQL functions (e.g. SELECT, GROUP BY, DISTINCT, SUM, etc).**  
 
 ```{r}
 #number of flights by origin
@@ -103,7 +103,7 @@ List of SQL functions used:
 - GROUP BY
 - ORDER BY
 
-*3. Write two SQL queries to create new features from existing data.*  
+**3. Write two SQL queries to create new features from existing data.**   
 
 ```{r}
 #Change precipitation and visibility into the international standard
@@ -158,6 +158,8 @@ merged <- dbGetQuery(con, "
 
 nrow(merged) #it seems that some flights were not matched, as the observations decreased from 336776 to 335220
 
+dbDisconnect(con)
+
 merged <- merged %>%
   right_join(nyc_airlines, by = "carrier") %>%
    rename(
@@ -167,7 +169,7 @@ merged <- merged %>%
 
 ```
 
-*4. Visualize your data by creating a plot with ggplot2.* 
+**4. Visualize your data by creating a plot with ggplot2.**  
 
 Departure delay:
 
@@ -179,12 +181,24 @@ summary(merged$dep_delay) #need to exclude NAs for calculations
 merged <- merged %>%
   mutate(name = factor(name))
 
-glimpse(merged$name) #checking that it is now a factor and can be reordered for the plots
+levels(merged$name) #name is now a factor ordered in alphabetical order
 
-merged %>%
+delay <- merged %>%
   group_by(name) %>%
-  summarise(avg_delay = mean(dep_delay, na.rm = TRUE)) %>%
-  mutate(name = fct_reorder(name, avg_delay)) %>%
+  summarise(avg_delay = mean(dep_delay, na.rm = TRUE))
+
+delay <- delay %>%
+  mutate(name = fct_reorder(name, avg_delay, .desc = TRUE)) %>%
+  arrange(desc(avg_delay))
+
+delay
+
+levels(delay$name)
+
+merged <- merged %>%
+  mutate(name = factor(name, levels = levels(delay$name))) #now we reordered the levels of the airlines according to most delayed to least delayed on average
+  
+delay %>%
   ggplot(aes(x = avg_delay, y = name)) +
   geom_col() +
   labs(title = "Departure Delay by National Airlines leaving from New York in 2013", 
@@ -208,33 +222,40 @@ The influence of weather on departure delay:
 
 merged %>%
   filter(!is.na(dep_delay)) %>%
-   ggplot(aes(x = dep_delay, y = precip)) +
+   ggplot(aes(x = precip, y = dep_delay)) +
   geom_point() +
-  geom_smooth(method = "lm", color = "blue") +
   facet_wrap(~ name) +
   labs(title = "Relationship between Precipitation and Departure Delay by Airline in National Flights Leaving from New York in 2013",
        subtitle = "Includes flights departing from the Newark Liberty International Airport, John F. Kennedy International Airport and LaGuardia Airport.",
-       x = "Average departure delay (minutes)",
-       y = "Precipitation (mm)")
+       x = "Precipitation (mm)",
+       y = "Departure delay (minutes)") +
+  ylim(0,800)
 
 #visibility
 
 merged %>%
   filter(!is.na(dep_delay)) %>%
-   ggplot(aes(x = dep_delay, y = visib)) +
+   ggplot(aes(x = visib, y = dep_delay)) +
   geom_point() +
-  geom_smooth(method = "lm", color = "blue") +
   facet_wrap(~ name) +
   labs(title = "Relationship between Visibility and Departure Delay by Airline in National Flights Leaving from New York in 2013",
        subtitle = "Includes flights departing from the Newark Liberty International Airport, John F. Kennedy International Airport and LaGuardia Airport.",
-       x = "Average departure delay (minutes)",
-       y = "Visibility (km)")
-  
+       x = "Visibility (km)",
+       y = "Departure delay (minutes)") +
+  ylim(0,800)
+    
 ```
 
 
-*5. Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis. Be sure to comment and organize your code so is easy to understand what you are doing.*
+**5. Report your findings. Provide a paragraph summarizing your methods and key findings. Include any limitations or potential biases in your analysis.**
 
+We analyzed departure delays for domestic flights departing from New York's Newark Liberty International Airport, John F. Kennedy International Airport, and LaGuardia Airport during 2013. Data from 16 airlines were sourced from the nycflights13 package, and the flight, airline, and weather datasets were transformed into an SQL database for querying. SQL queries were used to investigate variables of interest, including departure delays, airline performance, and weather conditions. Finally, visualizations were created to further explore and characterize departure delays.  
+
+The average departure delay in 2013 for domestic flights was 12.6 minutes. The airlines with the longest average delays were Frontier Airlines, ExpressJet Airlines, Mesa Airlines, AirTran Airways Corporation, and Southwest Airlines, with average delays ranging from 20.3 to 17.7 minutes.  
+
+We also explored the relationship between two weather variables—precipitation and visibility—and departure delays. Our hypothesis was that increased precipitation would correlate positively with delays, while decreased visibility would correlate negatively. However, visual analysis revealed no clear linear relationship between precipitation (in mm) and departure delays, even when stratified by airline. Similarly, no apparent linear relationship was observed between visibility and departure delays across airlines.  
+
+This analysis has several limitations that could impact the results. Confounding factors such as air traffic congestion, mechanical or technical issues, flight schedules, time of day, day of the week, and flight destinations were not accounted for, despite their likely influence on delays. For example, busier times or routes with higher congestion may systematically affect departure times. Additionally, we did not perform statistical tests, such as regression analysis, to quantify relationships or adjust for these potential confounders. This limits our ability to draw definitive conclusions about the relationship between weather and delays.  
 
 
 # Part 2
